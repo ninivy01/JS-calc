@@ -74,7 +74,7 @@ body {
 
 #buttons-container #igual-btn {
     grid-column: span 2;
-    background-color: #75a5cb;
+    background-color: #75a5CB;
 }
 
 #buttons-container  #igual-btn:hover {
