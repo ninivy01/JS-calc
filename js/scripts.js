@@ -1,41 +1,44 @@
 const previousOperationText = document.querySelector("#previous-operation");
 const currentOperationText = document.querySelector("#current-operation");
-const buttons = document. querySelectorAll("#buttons-container button");
+const buttons = document.querySelectorAll("#buttons-container button");
 
-class Calculator {
+
+
+class Calculator{
     constructor(previousOperationText, currentOperationText) {
         this.previousOperationText = previousOperationText;
         this.currentOperationText = currentOperationText;
-        this.currentOperation - "";
+        this.currentOperation = "";
     }
 
-    //adicionar digito na tla da calculadora
+    //adicionar digito na tela da calculadora
     addDigit(digit) {
-        ///verificar se a tela ou não
-        if(digit === "." && this.currentOperationText.innerText.includes (".")){
-             return;
+        //verificar se tem ou não o ponto
+        if(digit ==="." && this.currentOperationText.innerText.includes(".")){
+            return;
         }
 
         this.currentOperation = digit;
         this.updateScreen();
     }
 
-    //Todos operações da calculadora
-    processOperation(operation) {
+    //Todas operações da calculadora
+    processOperation(operation){
         //verificar se current está vazio
-        if(this.currentOperationText.innerText === "" && operation !== "C") {
+        if(this.currentOperationText.innerText === "" && operation !== "C"){
             //mudar operação
-            if(previousOperationText.innerText !== "") {
-            this.changerOperation(operation);
+            if(previousOperationText.innerText !== ""){
+                this.changeOperation(operation);                
+            }
+            return;
         }
-        return;
-    }
-        //pegar  valores dos textos inseridos
+    
+        //pegar valores dos textos inseridos
         let operationValue;
-        const previous = +this.priviousOperationText.innerText.split(" ")[0];
+        const previous = +this.previousOperationText.innerText.split(" ")[0];
         const current = +this.currentOperationText.innerText;
 
-        switch (operation) {
+        switch (operation){
             case "+":
                 operationValue = previous + current;
                 this.updateScreen(operationValue, operation, current, previous);
@@ -48,7 +51,7 @@ class Calculator {
                 operationValue = previous / current;
                 this.updateScreen(operationValue, operation, current, previous);
                 break;
-            case "*":
+             case "*":
                 operationValue = previous * current;
                 this.updateScreen(operationValue, operation, current, previous);
                 break;
@@ -64,105 +67,114 @@ class Calculator {
             case "=":
                 this.processEqualsOperation();
                 break;
-            default: 
+            default:
                 return;
         }
-    }
+    } 
 
     //mudar valores na tela da calculadora
-    updateScreen( 
+    updateScreen(
         operationValue = null,
         operation = null,
         current = null,
         previous = null
-        ) {
-            
-            if(operationValue === null) {
-                this.currentOperationText.innerText += this.currentOperation;
-            } else {
-                //checar se o valor é zero,se for, colocar o valor atual 
+    ) {
+        console.log(operationValue, operation, current, previous);
+
+        if(operationValue === null) {
+            this.currentOperationText.innerText += this.currentOperation;
+        }else {
+            //checar se o valor é zero, se for, colocar valor atual
             if(previous === 0){
-                operationValue = current;
+                operationValue = current
             }
 
-            ///adicionar valor atual no valo anterior
+            //adicionar valor atual no valor anterior
             this.previousOperationText.innerText = `${operationValue} ${operation}`;
             this.currentOperationText.innerText = "";
-
-        }   
+        }
     }
 
-      //mudar operação matemática
-    changerOperation(operation) {
+    //mudar operação matemática
+    changeOperation(operation){
 
-    const mathOperations = ["*", "/", "+", "-"]
+        const mathOperations = ["*", "/", "=", "-"]
 
-     if(mathOperations.includes(operation)) {
-         return;
-    }
+        if(!mathOperations.includes(operation)){
+            return;
+        }
 
-     this.previousOperationText.innerText = this.previousOperationText.innerText.slice (0, -1) + operation;
+        this.previousOperationText.innerText = this.previousOperationText.innerText.slice(0, -1) + operation;
     }
     //deletar ultimo digito
     processDelOperation() {
         this.currentOperationText.innerText = this.currentOperationText.innerText.slice(0, -1);
     }
-    //limpar operação atual 
+    //limpar operação atual
     processClearCurrentOperation() {
-     this.currentOperationText.innerText =""; 
+        this.currentOperationText.innerText = "";
     }
-   //limpar todos os valores
+    //limpar tudo
     processClearOperation() {
-        this.currentOperationText.innerText =""; 
-        this.previousOperationText.innerText = ""; 
+        this.currentOperationText.innerText = "";
+        this.previousOperationText.innerText = "";
     }
-    //mostrar resultado final 
-    processEqualsOperation() {
+    //mostra o resultado final
+    processEqualsOperation(){
         const operation = this.previousOperationText.innerText.split(" ")[1];
-
-        this.processOperation(operation);
-
-
+        
+        this.processOperation(operation);   
+       
     }
+
 
 }
 
-     const calc = new Calculator(previousOperationText, currentOperationText);
+const calc = new Calculator(previousOperationText, currentOperationText);
 
-buttons.forEach ((btn) => {
+
+buttons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-        const value = e.target.innerText;
+    const value = e.target.innerText;
 
-        if(+value >=0 || value === ".") {
-            calc.addDigit(value);
-        } else {
-            calc.processOperation(value)
-        }
+    if(+value >=0 || value === ".") {
+        calc.addDigit(value);
+    } else {
+        calc.processOperation(value);
+    }
     });
-});
-
+});     
+   
 window.addEventListener("keydown", (e) => {
     const value = e.key;
 
- if(+value >= 0 || value === ".") {
-     calc.addDigit(value);
-} else {
-    calc.processOperation(value);
-}
-
-if(value == "Enter") {
-    calc.processOperation("=");
-    calc.processEqualsOperation();
-}
-
-if(value == "backspace") {
-    calc.processOperation("DEL");
-    calc.processEqualsOperation();
-}
-
-if(value == "backspace") {
-    calc.processOperation("CE");
-    calc.processEqualsOperation();
+    if(+value >= 0 || value === ".") {
+        calc.addDigit(value);
+    }else {
+        calc.processOperation(value);
     }
 
-});
+    if(value == "Enter") {
+        calc.processOperation("=");
+        calc.processEqualsOperation();
+    }
+    
+    if(value == "Backspace") {
+        calc.processOperation("DEL");
+        calc.processOperation();
+    }
+
+    if(value == "Escape") {
+        calc.processOperation("C");
+        calc.processOperation();
+    }
+
+    if(value == "'") {
+        calc.processOperation("CE");
+        calc.processOperation();
+    }
+
+
+
+
+})
